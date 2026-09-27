@@ -8,7 +8,6 @@ DEFAULT_API_URL = "https://restaurant-agent-oarq.onrender.com/chat"
 
 st.set_page_config(
     page_title="AI Restaurant Order Agent",
-    page_icon="🍔",
     layout="centered"
 )
 
@@ -41,7 +40,7 @@ with st.sidebar:
         st.rerun()
 
 # --- MAIN UI ---
-st.title("🍔 AI Restaurant Order Agent")
+st.title("AI Restaurant Order Agent")
 st.write("Welcome! Tell me what you'd like to order today.")
 
 # Display chat messages from history on app rerun
