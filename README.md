@@ -140,4 +140,4 @@ uv run pytest
 
 ## Deployment
 - **API URL:** https://restaurant-agent-oarq.onrender.com/docs
-- **Dashboard URL:** *(Available on Streamlit Community Cloud)*
+- **Dashboard URL:** https://restaurants-agents.streamlit.app/
