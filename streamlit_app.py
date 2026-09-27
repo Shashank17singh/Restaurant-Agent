@@ -23,9 +23,6 @@ if "final_result" not in st.session_state:
 
 # --- SIDEBAR ---
 with st.sidebar:
-    st.header("Settings")
-    api_url = st.text_input("Backend API URL", DEFAULT_API_URL)
-    
     st.header("Session Details")
     st.write(f"**Thread ID:** `{st.session_state.thread_id[:8]}`")
     st.write(f"**Order Status:** `{st.session_state.status}`")
@@ -60,7 +57,7 @@ if prompt := st.chat_input("I would like to order..."):
     with st.spinner("Agent is thinking..."):
         try:
             response = requests.post(
-                api_url,
+                DEFAULT_API_URL,
                 json={
                     "thread_id": st.session_state.thread_id,
                     "message": prompt
