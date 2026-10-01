@@ -23,6 +23,7 @@ compiled_graph = builder.compile(checkpointer=memory, interrupt_before=["user_in
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):
+    """Handles incoming chat requests, processes them through the LangGraph agent, and returns the response."""
     thread_id = request.thread_id
     config = {"configurable": {"thread_id": thread_id}, "recursion_limit": 100}
 

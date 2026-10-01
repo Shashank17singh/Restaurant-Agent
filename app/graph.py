@@ -50,6 +50,7 @@ class State(dict):
     final_result: str
 
 def initial_state(menu: dict[str, int] | None = None) -> State:
+    """Initializes the graph state with default values and a menu."""
     return {
         "messages": [],
         "menu": menu if menu is not None else dict(DEFAULT_MENU),
@@ -185,6 +186,7 @@ def llm_node(state: State) -> dict:
     raise ValueError(f"llm node got unexpected status {status!r}")
 
 def order_confirm(state: State) -> dict:
+    """Confirms if the requested order is available in the menu and checks quantity."""
     order = dict(state["order"])
     menu = state["menu"]
     match = find_menu_item(order["dish_name"], menu)
@@ -204,12 +206,14 @@ def order_confirm(state: State) -> dict:
     return {"order": order, "status": status}
 
 def _outcome(config: RunnableConfig, key: str, prob: float) -> bool:
+    """Determines success or failure of an action, allowing scripted outcomes for testing."""
     scripted = config.get("configurable", {}).get(key)
     if scripted:
         return bool(scripted.pop(0))
     return random.random() < prob
 
 def cook(state: State, config: RunnableConfig) -> dict:
+    """Simulates the cooking process, which may randomly fail."""
     if _outcome(config, "cook_outcomes", COOK_SUCCESS_PROB):
         logger.info("cook: success -> ready")
         return {"status": "ready"}
@@ -217,6 +221,7 @@ def cook(state: State, config: RunnableConfig) -> dict:
     return {"status": "cook_failed"}
 
 def serve(state: State, config: RunnableConfig) -> dict:
+    """Simulates the serving process, which may randomly fail."""
     if _outcome(config, "serve_outcomes", SERVE_SUCCESS_PROB):
         logger.info("serve: success -> complete")
         return {"status": "complete"}
@@ -224,6 +229,7 @@ def serve(state: State, config: RunnableConfig) -> dict:
     return {"status": "serve_failed"}
 
 def route_after_llm(state: State) -> str:
+    """Determines the next node to execute based on the status set by the LLM node."""
     status = state["status"]
     if status == "awaiting_user":
         return "user_input"

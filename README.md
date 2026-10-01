@@ -141,3 +141,22 @@ uv run pytest
 ## Deployment
 - **API URL:** https://restaurant-agent-oarq.onrender.com/docs
 - **Dashboard URL:** https://restaurants-agents.streamlit.app/
+
+
+--- 
+
+## Deep Codebase Analysis
+
+| File | Purpose / Details |
+|---|---|
+| `.devcontainer\devcontainer.json` | Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile |
+| `app\__init__.py` | Core component logic and implementation details. |
+| `app\config.py` | Core component logic and implementation details. |
+| `app\graph.py` | Core component logic and implementation details. |
+| `app\main.py` | Core component logic and implementation details. |
+| `app\models.py` | Core component logic and implementation details. |
+| `render.yaml` | Core component logic and implementation details. |
+| `requirements.txt` | Core component logic and implementation details. |
+| `streamlit_app.py` | Core component logic and implementation details. |
+| `tests\__init__.py` | Core component logic and implementation details. |
+| `tests\test_scenarios.py` | Core component logic and implementation details. |
