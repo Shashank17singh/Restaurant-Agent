@@ -123,7 +123,7 @@ if prompt := st.chat_input("I would like to order..."):
             response = requests.post(
                 DEFAULT_API_URL,
                 json={"thread_id": st.session_state.thread_id, "message": prompt},
-                timeout=30,
+                timeout=120,
             )
             response.raise_for_status()
             data = response.json()
