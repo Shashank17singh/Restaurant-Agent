@@ -2,8 +2,6 @@ import streamlit as st
 import requests
 import uuid
 
-# --- CONFIGURATION ---
-# Use the live API url (or allow overriding via sidebar)
 DEFAULT_API_URL = "https://restaurant-agent-oarq.onrender.com/chat"
 
 st.set_page_config(
@@ -11,7 +9,79 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- SESSION STATE INITIALIZATION ---
+CUSTOM_CSS = """
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700&family=Playfair+Display+SC:wght@400;700&display=swap');
+
+html, body, [class*="css"]  {
+    font-family: 'Karla', sans-serif !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display SC', serif !important;
+    color: #DC2626 !important;
+}
+
+.stApp {
+    background-color: #FEF2F2;
+    color: #450A0A;
+}
+
+[data-testid="stHeader"] {
+    background-color: rgba(254,242,242,0.9) !important;
+}
+
+/* Chat Bubbles */
+[data-testid="stChatMessage"] {
+    background-color: #FFFFFF;
+    border: 2px solid #FECACA;
+    border-radius: 12px;
+    box-shadow: 4px 4px 0px #F87171;
+    margin-bottom: 20px;
+}
+
+/* Buttons */
+.stButton > button {
+    background-color: #DC2626;
+    color: #FFFFFF;
+    font-family: 'Karla', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 4px;
+    box-shadow: 4px 4px 0px #450A0A;
+    transition: all 0.1s ease-in-out;
+    text-transform: uppercase;
+}
+
+.stButton > button:hover {
+    background-color: #F87171;
+    color: #FFFFFF;
+}
+
+.stButton > button:active {
+    box-shadow: 0px 0px 0px #450A0A;
+    transform: translate(4px, 4px);
+}
+
+/* Inputs */
+.stChatInputContainer > div {
+    background-color: #FFFFFF;
+    border: 2px solid #FECACA;
+    border-radius: 8px;
+    box-shadow: 4px 4px 0px #F87171;
+}
+.stChatInputContainer > div:focus-within {
+    border-color: #DC2626;
+}
+
+hr {
+    border-color: #FECACA !important;
+}
+</style>
+"""
+st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
+
 if "thread_id" not in st.session_state:
     st.session_state.thread_id = str(uuid.uuid4())
 if "messages" not in st.session_state:
@@ -21,7 +91,6 @@ if "status" not in st.session_state:
 if "final_result" not in st.session_state:
     st.session_state.final_result = None
 
-# --- SIDEBAR ---
 with st.sidebar:
     st.header("Session Details")
     st.write(f"**Thread ID:** `{st.session_state.thread_id[:8]}`")
@@ -36,16 +105,13 @@ with st.sidebar:
         st.session_state.final_result = None
         st.rerun()
 
-# --- MAIN UI ---
 st.title("AI Restaurant Order Agent")
 st.write("Welcome! Tell me what you'd like to order today.")
 
-# Display chat messages from history on app rerun
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# React to user input
 if prompt := st.chat_input("I would like to order..."):
     # 1. Display user message in chat message container
     st.chat_message("user").markdown(prompt)
