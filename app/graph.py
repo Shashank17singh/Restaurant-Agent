@@ -11,17 +11,14 @@ from langgraph.graph.message import add_messages
 from app.config import settings, logger
 from app.models import OrderIntent
 
-# Initialize the LLM based on settings
 llm = ChatGroq(model=settings.model, api_key=settings.groq_api_key, temperature=0)
 
-# Constants
 ORDER_RETRIES = 3
 COOK_RETRIES = 2
 SERVE_RETRIES = 2
 COOK_SUCCESS_PROB = 0.6
 SERVE_SUCCESS_PROB = 0.6
 
-# Default fallback menu just in case none is provided
 DEFAULT_MENU: dict[str, int] = {
     "pizza": 5,
     "burger": 3,

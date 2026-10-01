@@ -17,7 +17,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# In-memory checkpointer for multi-turn conversations
 memory = MemorySaver()
 compiled_graph = builder.compile(checkpointer=memory, interrupt_before=["user_input"])
 
@@ -27,21 +26,16 @@ async def chat_endpoint(request: ChatRequest):
     thread_id = request.thread_id
     config = {"configurable": {"thread_id": thread_id}, "recursion_limit": 100}
 
-    # Clean narrow no-break spaces to standard spaces for Windows console rendering
     user_msg_text = request.message.replace("\u202f", " ")
 
-    # Check if this thread already has state
     current_state = compiled_graph.get_state(config)
     if not current_state.values:
-        # Initialize state with the user's provided menu or default
         new_state = initial_state(menu=request.menu)
         compiled_graph.update_state(config, new_state)
     else:
-        # Optionally update the menu if passed in on subsequent calls
         if request.menu is not None:
             compiled_graph.update_state(config, {"menu": request.menu})
 
-    # Update state with the user's latest message as if they typed it at the interrupt
     compiled_graph.update_state(
         config,
         {"messages": [HumanMessage(content=user_msg_text)]},

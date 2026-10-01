@@ -4,7 +4,6 @@ from langchain_core.runnables import RunnableConfig
 
 from app.graph import builder, initial_state
 
-# Compile graph for testing without checkpointer (tests run in one go)
 graph = builder.compile()
 
 def run_simulation(user_inputs: list[str], cook_outcomes: list[bool] | None = None, serve_outcomes: list[bool] | None = None):
