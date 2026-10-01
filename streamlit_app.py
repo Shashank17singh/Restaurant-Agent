@@ -1,13 +1,11 @@
-import streamlit as st
-import requests
 import uuid
+
+import requests
+import streamlit as st
 
 DEFAULT_API_URL = "https://restaurant-agent-oarq.onrender.com/chat"
 
-st.set_page_config(
-    page_title="AI Restaurant Order Agent",
-    layout="centered"
-)
+st.set_page_config(page_title="AI Restaurant Order Agent", layout="centered")
 
 CUSTOM_CSS = """
 <style>
@@ -115,35 +113,34 @@ for msg in st.session_state.messages:
 if prompt := st.chat_input("I would like to order..."):
     # 1. Display user message in chat message container
     st.chat_message("user").markdown(prompt)
-    
+
     # 2. Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
-    
+
     # 3. Call the API
     with st.spinner("Agent is thinking..."):
         try:
             response = requests.post(
                 DEFAULT_API_URL,
-                json={
-                    "thread_id": st.session_state.thread_id,
-                    "message": prompt
-                },
-                timeout=30
+                json={"thread_id": st.session_state.thread_id, "message": prompt},
+                timeout=30,
             )
             response.raise_for_status()
             data = response.json()
-            
+
             # 4. Display agent responses and save to history
             agent_replies = data.get("responses", [])
-            
+
             if not agent_replies:
                 agent_replies = ["*(No message returned from agent)*"]
 
             for reply in agent_replies:
                 with st.chat_message("assistant"):
                     st.markdown(reply)
-                st.session_state.messages.append({"role": "assistant", "content": reply})
-            
+                st.session_state.messages.append(
+                    {"role": "assistant", "content": reply}
+                )
+
             # Update status in sidebar
             st.session_state.status = data.get("status", st.session_state.status)
             st.session_state.final_result = data.get("final_result")
@@ -154,4 +151,6 @@ if prompt := st.chat_input("I would like to order..."):
 
 # Optional: Disable input if order is finished
 if st.session_state.status in ["done", "failed"]:
-    st.info("This ordering session has ended. Click 'Start New Order' in the sidebar to begin again.")
+    st.info(
+        "This ordering session has ended. Click 'Start New Order' in the sidebar to begin again."
+    )

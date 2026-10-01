@@ -27,28 +27,28 @@ graph TD
     subgraph "Client Interface"
     A[User Chat / Streamlit UI]
     end
-    
+
     subgraph "FastAPI & Graph State"
     B(FastAPI Endpoint) -->|MemorySaver| C{LangGraph State}
     C --> D[LLM Brain Node]
     end
-    
+
     subgraph "Agent Tool Nodes"
     D -->|Check Inventory| E(Order Confirm Node)
     D -->|Prepare Food| F(Cook Node)
     D -->|Deliver Food| G(Serve Node)
     end
-    
+
     subgraph "Failure Handling"
     E -.->|Partial/Unavailable| D
     F -.->|Cook Failed| D
     G -.->|Serve Failed| D
     end
-    
+
     classDef io fill:#f9f0ff,stroke:#8a2be2,stroke-width:2px,color:#000;
     classDef core fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#000;
     classDef logic fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000;
-    
+
     class A io;
     class B,C,D core;
     class E,F,G logic;
@@ -58,26 +58,26 @@ graph TD
 
 ## Features
 
-| Component | Description |
-|---|---|
-| **Dynamic Order Extraction** | Uses Groq's structured outputs via Pydantic to accurately parse dish names, quantities, and intent (e.g., ordering vs. unrelated chat). |
-| **Stateful LangGraph Workflow** | Maintains strict conversational and order state using `MemorySaver`, allowing multi-turn conversations and human-in-the-loop confirmation. |
-| **Inventory Verification** | Dynamically checks requested items against a live menu dictionary. Handles partial orders by routing back to the user for approval. |
-| **Fault-Tolerant Execution** | Implements robust retry mechanisms (3 order attempts, 2 cook attempts, 2 serve attempts) simulating real-world kitchen and serving failures. |
-| **Production Architecture** | Fully containerized with a FastAPI backend exposed on Render, coupled with a seamless Streamlit chat interface. |
+| Component                       | Description                                                                                                                                  |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Dynamic Order Extraction**    | Uses Groq's structured outputs via Pydantic to accurately parse dish names, quantities, and intent (e.g., ordering vs. unrelated chat).      |
+| **Stateful LangGraph Workflow** | Maintains strict conversational and order state using `MemorySaver`, allowing multi-turn conversations and human-in-the-loop confirmation.   |
+| **Inventory Verification**      | Dynamically checks requested items against a live menu dictionary. Handles partial orders by routing back to the user for approval.          |
+| **Fault-Tolerant Execution**    | Implements robust retry mechanisms (3 order attempts, 2 cook attempts, 2 serve attempts) simulating real-world kitchen and serving failures. |
+| **Production Architecture**     | Fully containerized with a FastAPI backend exposed on Render, coupled with a seamless Streamlit chat interface.                              |
 
 ---
 
 ## Technology Stack
 
-| Component | Technologies |
-|:---|:---|
-| **Agent Framework** | `LangGraph`, `LangChain` |
-| **LLM Inference** | `Groq` (model: `openai/gpt-oss-120b`) |
-| **Data Validation** | `Pydantic`, `Pydantic-Settings` |
-| **API & Backend** | `FastAPI`, `Uvicorn` |
-| **Frontend UI** | `Streamlit` |
-| **Testing** | `Pytest` |
+| Component            | Technologies                                |
+| :------------------- | :------------------------------------------ |
+| **Agent Framework**  | `LangGraph`, `LangChain`                    |
+| **LLM Inference**    | `Groq` (model: `openai/gpt-oss-120b`)       |
+| **Data Validation**  | `Pydantic`, `Pydantic-Settings`             |
+| **API & Backend**    | `FastAPI`, `Uvicorn`                        |
+| **Frontend UI**      | `Streamlit`                                 |
+| **Testing**          | `Pytest`                                    |
 | **Containerization** | `Docker`, `uv` (Fast Dependency Resolution) |
 
 ---
@@ -107,6 +107,7 @@ Restaurant-Agent/
 ## Setup & Execution
 
 ### 1. Environment Initialization
+
 ```bash
 git clone https://github.com/Shashank17singh/Restaurant-Agent.git
 cd Restaurant-Agent
@@ -114,24 +115,31 @@ uv sync
 ```
 
 ### 2. Configure Environment Variables
+
 Create a `.env` file in the root directory and add your Groq API Key:
+
 ```env
 GROQ_API_KEY=your_api_key_here
 ```
 
 ### 3. Run the Backend API
+
 ```bash
 uv run uvicorn app.main:app --port 8000 --reload
 ```
+
 The FastAPI swagger docs will be available at `http://127.0.0.1:8000/docs`.
 
 ### 4. Run the Streamlit UI
+
 In a separate terminal, launch the chat interface:
+
 ```bash
 uv run streamlit run streamlit_app.py
 ```
 
 ### 5. Run Tests
+
 ```bash
 uv run pytest
 ```
@@ -139,24 +147,24 @@ uv run pytest
 ---
 
 ## Deployment
+
 - **API URL:** https://restaurant-agent-oarq.onrender.com/docs
 - **Dashboard URL:** https://restaurants-agents.streamlit.app/
 
-
---- 
+---
 
 ## Deep Codebase Analysis
 
-| File | Purpose / Details |
-|---|---|
+| File                              | Purpose / Details                                                                              |
+| --------------------------------- | ---------------------------------------------------------------------------------------------- |
 | `.devcontainer\devcontainer.json` | Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile |
-| `app\__init__.py` | Core component logic and implementation details. |
-| `app\config.py` | Core component logic and implementation details. |
-| `app\graph.py` | Core component logic and implementation details. |
-| `app\main.py` | Core component logic and implementation details. |
-| `app\models.py` | Core component logic and implementation details. |
-| `render.yaml` | Core component logic and implementation details. |
-| `requirements.txt` | Core component logic and implementation details. |
-| `streamlit_app.py` | Core component logic and implementation details. |
-| `tests\__init__.py` | Core component logic and implementation details. |
-| `tests\test_scenarios.py` | Core component logic and implementation details. |
+| `app\__init__.py`                 | Core component logic and implementation details.                                               |
+| `app\config.py`                   | Core component logic and implementation details.                                               |
+| `app\graph.py`                    | Core component logic and implementation details.                                               |
+| `app\main.py`                     | Core component logic and implementation details.                                               |
+| `app\models.py`                   | Core component logic and implementation details.                                               |
+| `render.yaml`                     | Core component logic and implementation details.                                               |
+| `requirements.txt`                | Core component logic and implementation details.                                               |
+| `streamlit_app.py`                | Core component logic and implementation details.                                               |
+| `tests\__init__.py`               | Core component logic and implementation details.                                               |
+| `tests\test_scenarios.py`         | Core component logic and implementation details.                                               |

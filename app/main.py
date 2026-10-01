@@ -3,8 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from langchain_core.messages import AIMessage, HumanMessage
 from langgraph.checkpoint.memory import MemorySaver
 
-from app.models import ChatRequest, ChatResponse
 from app.graph import builder, initial_state
+from app.models import ChatRequest, ChatResponse
 
 app = FastAPI(title="Restaurant Agent API", version="1.0.0")
 
@@ -19,6 +19,7 @@ app.add_middleware(
 
 memory = MemorySaver()
 compiled_graph = builder.compile(checkpointer=memory, interrupt_before=["user_input"])
+
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):
@@ -39,7 +40,7 @@ async def chat_endpoint(request: ChatRequest):
     compiled_graph.update_state(
         config,
         {"messages": [HumanMessage(content=user_msg_text)]},
-        as_node="user_input"
+        as_node="user_input",
     )
 
     ai_responses = []
@@ -56,7 +57,7 @@ async def chat_endpoint(request: ChatRequest):
                 if isinstance(m, AIMessage):
                     ai_responses.append(m.content.replace("\u202f", " "))
             seen_messages = len(messages)
-            
+
             final_result = final.get("final_result")
             status = final.get("status", "")
 
@@ -64,7 +65,5 @@ async def chat_endpoint(request: ChatRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
     return ChatResponse(
-        responses=ai_responses,
-        status=status,
-        final_result=final_result
+        responses=ai_responses, status=status, final_result=final_result
     )
