@@ -61,7 +61,7 @@ async def chat_endpoint(request: ChatRequest):
             final_result = final.get("final_result")
             status = final.get("status", "")
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         raise HTTPException(status_code=500, detail=str(e))
 
     return ChatResponse(
