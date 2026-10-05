@@ -16,7 +16,7 @@
 
 ## Overview
 
-Developed a robust, production-ready AI agent system that fully automates restaurant order management. The architecture leverages LangGraph to create a stateful, fault-tolerant workflow handling order extraction, inventory confirmation, kitchen processing (cooking), and serving. Human-in-the-loop interactions and smart retry mechanisms handle edge cases like partial inventory and kitchen failures seamlessly.
+A stateful AI restaurant ordering system powered by LangGraph and Gemini. It handles multi-turn conversations using a FastAPI backend with MemorySaver, calls tools to query the menu, and serves users through a Streamlit frontend.
 
 ---
 
