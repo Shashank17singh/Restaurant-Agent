@@ -1,3 +1,7 @@
+"""
+FastAPI application entry point.
+Exposes the LangGraph agent via a RESTful /chat endpoint with streaming support.
+"""
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_core.messages import AIMessage, HumanMessage
@@ -23,7 +27,6 @@ compiled_graph = builder.compile(checkpointer=memory, interrupt_before=["user_in
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):
-    """Handles incoming chat requests, processes them through the LangGraph agent, and returns the response."""
     thread_id = request.thread_id
     config = {"configurable": {"thread_id": thread_id}, "recursion_limit": 100}
 

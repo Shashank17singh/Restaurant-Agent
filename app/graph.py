@@ -1,3 +1,7 @@
+"""
+LangGraph state machine for the restaurant ordering process.
+Defines the state structure, LLM integration, and routing logic for the agent.
+"""
 import difflib
 import random
 from typing import Annotated, Literal
@@ -100,7 +104,6 @@ Was the user just offered a partial order? {partial_offer}
 
 
 def extract_order(state: State) -> OrderIntent:
-    """Ask the LLM to pull dish + quantity (or intent) out of the latest user message."""
     partial_offer = (
         "yes"
         if state["status"] == "awaiting_user"
@@ -116,7 +119,6 @@ def extract_order(state: State) -> OrderIntent:
 
 
 def say(instruction: str, state: State) -> str:
-    """Ask the LLM to phrase a short message to the customer given the current state."""
     system = (
         "You are the friendly assistant of a restaurant's order system. "
         "Write ONE or TWO short sentences to the customer. No markdown.\n"
@@ -129,14 +131,12 @@ def say(instruction: str, state: State) -> str:
 
 # Nodes
 def user_input(state: State, config: RunnableConfig) -> dict:
-    """Read the next order from the user. (Mainly for CLI/Testing)."""
     read = config.get("configurable", {}).get("input_fn", input)
     text = read("\nYou: ")
     return {"messages": [HumanMessage(content=text)]}
 
 
 def llm_node(state: State) -> dict:
-    """The brain. Reads status + counters, talks to the user, and decides the next status."""
     status = state["status"]
     order = dict(state["order"])
 

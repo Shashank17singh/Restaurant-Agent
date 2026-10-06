@@ -1,11 +1,12 @@
+"""
+Pydantic data models for API requests, responses, and internal state validation.
+"""
 from typing import Literal
 
 from pydantic import BaseModel, Field
 
 
 class OrderIntent(BaseModel):
-    """What the LLM extracts from a user message."""
-
     intent: Literal["new_order", "accept_partial", "unrelated"] = Field(
         description=(
             "new_order: user is ordering a dish with a quantity. "
@@ -22,8 +23,6 @@ class OrderIntent(BaseModel):
 
 
 class ChatRequest(BaseModel):
-    """Payload for the chat endpoint."""
-
     thread_id: str = Field(
         ..., description="Unique identifier for the conversational thread"
     )
@@ -34,8 +33,6 @@ class ChatRequest(BaseModel):
 
 
 class ChatResponse(BaseModel):
-    """Response returned from the chat endpoint."""
-
     responses: list[str] = Field(description="A list of messages produced by the agent")
     status: str = Field(description="The current status of the order flow")
     final_result: str | None = Field(
