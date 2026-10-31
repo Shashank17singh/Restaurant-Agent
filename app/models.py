@@ -2,9 +2,9 @@
 Pydantic data models for API requests, responses, and internal state validation.
 """
 
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, StringConstraints
 
 
 class OrderIntent(BaseModel):
@@ -25,11 +25,18 @@ class OrderIntent(BaseModel):
 
 class ChatRequest(BaseModel):
     thread_id: str = Field(
-        ..., description="Unique identifier for the conversational thread"
+        ...,
+        min_length=1,
+        max_length=128,
+        description="Unique identifier for the conversational thread",
     )
-    message: str = Field(..., description="The user's message")
-    menu: dict[str, int] | None = Field(
-        default=None, description="Dynamic menu for the restaurant (dish to stock)"
+    message: str = Field(
+        ..., min_length=1, max_length=1000, description="The user's message"
+    )
+    menu: dict[Annotated[str, StringConstraints(max_length=60)], int] | None = Field(
+        default=None,
+        max_length=50,
+        description="Dynamic menu for the restaurant (dish to stock)",
     )
 
 
