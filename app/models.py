@@ -1,6 +1,7 @@
 """
 Pydantic data models for API requests, responses, and internal state validation.
 """
+
 from typing import Literal
 
 from pydantic import BaseModel, Field

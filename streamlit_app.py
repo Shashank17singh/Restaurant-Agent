@@ -3,7 +3,9 @@ Streamlit UI for the AI Restaurant Order Agent.
 Manages chat session state and communicates with the FastAPI backend.
 Architecture note: Separates frontend concerns from agent logic running on the FastAPI backend.
 """
+
 import uuid
+
 import requests
 import streamlit as st
 

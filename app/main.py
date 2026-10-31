@@ -2,6 +2,9 @@
 FastAPI application entry point.
 Exposes the LangGraph agent via a RESTful /chat endpoint with streaming support.
 """
+
+import logging
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_core.messages import AIMessage, HumanMessage
@@ -10,13 +13,15 @@ from langgraph.checkpoint.memory import MemorySaver
 from app.graph import builder, initial_state
 from app.models import ChatRequest, ChatResponse
 
+logger = logging.getLogger(__name__)
+
 app = FastAPI(title="Restaurant Agent API", version="1.0.0")
 
 # Add CORS Middleware so frontend apps can interact with this API
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -64,8 +69,11 @@ async def chat_endpoint(request: ChatRequest):
             final_result = final.get("final_result")
             status = final.get("status", "")
 
-    except Exception as e:  # noqa: BLE001
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception as e:
+        logger.exception("Chat request failed")
+        raise HTTPException(
+            status_code=500, detail="The request failed. Please try again."
+        ) from e
 
     return ChatResponse(
         responses=ai_responses, status=status, final_result=final_result

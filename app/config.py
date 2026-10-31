@@ -2,6 +2,7 @@
 Configuration management for the restaurant agent.
 Loads environment variables and sets up logging configurations.
 """
+
 import logging
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
