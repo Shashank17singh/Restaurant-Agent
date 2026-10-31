@@ -2,7 +2,7 @@
 
 # Restaurant Agent
 
-**An intelligent, multi-turn AI restaurant ordering system powered by LangGraph and FastAPI.**
+**A multi-turn AI restaurant ordering system built with LangGraph and FastAPI.**
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![LangGraph](https://img.shields.io/badge/LangGraph-Agentic%20State-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://python.langchain.com/docs/langgraph)
@@ -16,7 +16,7 @@
 
 ## Overview
 
-A stateful AI restaurant ordering system powered by LangGraph and Gemini. It handles multi-turn conversations using a FastAPI backend with MemorySaver, calls tools to query the menu, and serves users through a Streamlit frontend.
+A stateful AI restaurant ordering system built with LangGraph and Groq. It handles multi-turn conversations using a FastAPI backend with MemorySaver, calls tools to query the menu, and serves users through a Streamlit frontend.
 
 ---
 
@@ -63,8 +63,8 @@ graph TD
 | **Dynamic Order Extraction**    | Uses Groq's structured outputs via Pydantic to accurately parse dish names, quantities, and intent (e.g., ordering vs. unrelated chat).      |
 | **Stateful LangGraph Workflow** | Maintains strict conversational and order state using `MemorySaver`, allowing multi-turn conversations and human-in-the-loop confirmation.   |
 | **Inventory Verification**      | Dynamically checks requested items against a live menu dictionary. Handles partial orders by routing back to the user for approval.          |
-| **Fault-Tolerant Execution**    | Implements robust retry mechanisms (3 order attempts, 2 cook attempts, 2 serve attempts) simulating real-world kitchen and serving failures. |
-| **Production Architecture**     | Fully containerized with a FastAPI backend exposed on Render, coupled with a seamless Streamlit chat interface.                              |
+| **Fault-Tolerant Execution**    | Implements retries (3 order attempts, 2 cook attempts, 2 serve attempts) simulating real-world kitchen and serving failures. |
+| **Production Architecture**     | Fully containerized, with a FastAPI backend on Render and a Streamlit chat interface.                              |
 
 ---
 
