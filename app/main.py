@@ -5,15 +5,21 @@ Exposes the LangGraph agent via a RESTful /chat endpoint with streaming support.
 
 import logging
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_core.messages import AIMessage, HumanMessage
 from langgraph.checkpoint.memory import MemorySaver
 
 from app.graph import builder, initial_state
 from app.models import ChatRequest, ChatResponse
+from app.rate_limit import RateLimiter, RecentThreads
 
 logger = logging.getLogger(__name__)
+
+CHAT_LIMIT_PER_CLIENT = 15
+CHAT_LIMIT_OVERALL = 30
+CHAT_LIMIT_WINDOW_SECONDS = 60
+MAX_THREADS = 500
 
 app = FastAPI(title="Restaurant Agent API", version="1.0.0")
 
@@ -28,11 +34,27 @@ app.add_middleware(
 
 memory = MemorySaver()
 compiled_graph = builder.compile(checkpointer=memory, interrupt_before=["user_input"])
+chat_limiter = RateLimiter(
+    CHAT_LIMIT_PER_CLIENT, CHAT_LIMIT_OVERALL, CHAT_LIMIT_WINDOW_SECONDS
+)
+recent_threads = RecentThreads(MAX_THREADS)
 
 
-@app.post("/chat", response_model=ChatResponse)
+def limit_chat(request: Request) -> None:
+    """Reject the request when the chat limits are used up."""
+    forwarded = request.headers.get("x-forwarded-for", "").split(",")[0].strip()
+    client = forwarded or (request.client.host if request.client else "unknown")
+    if not chat_limiter.allow(client):
+        raise HTTPException(
+            status_code=429, detail="Too many messages, please try again in a minute."
+        )
+
+
+@app.post("/chat", response_model=ChatResponse, dependencies=[Depends(limit_chat)])
 async def chat_endpoint(request: ChatRequest):
     thread_id = request.thread_id
+    for expired in recent_threads.touch(thread_id):
+        memory.delete_thread(expired)
     config = {"configurable": {"thread_id": thread_id}, "recursion_limit": 100}
 
     user_msg_text = request.message.replace("\u202f", " ")
