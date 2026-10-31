@@ -1,3 +1,16 @@
+import os
+from pathlib import Path
+
+import pytest
+
+# These scenarios call the live Groq API, so they only run with a real key.
+HAS_KEY = bool(os.getenv("GROQ_API_KEY")) or Path(".env").exists()
+pytestmark = pytest.mark.skipif(not HAS_KEY, reason="GROQ_API_KEY is not set")
+
+if not HAS_KEY:
+    # app.config needs a value at import time.
+    os.environ["GROQ_API_KEY"] = "placeholder"
+
 from langchain_core.runnables import RunnableConfig
 
 from app.graph import builder, initial_state
