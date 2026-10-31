@@ -26,3 +26,6 @@ Thumbs.db
 .ruff_cache/
 htmlcov/
 .coverage
+
+# Local AI assistant configuration
+.agents/
