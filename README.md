@@ -1,18 +1,6 @@
-<div align="center">
-
 # Restaurant Agent
 
-**A multi-turn AI restaurant ordering system built with LangGraph and FastAPI.**
-
-[![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![LangGraph](https://img.shields.io/badge/LangGraph-Agentic%20State-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://python.langchain.com/docs/langgraph)
-[![Groq](https://img.shields.io/badge/Groq-openai--gpt--oss--120b-F55036?style=for-the-badge&logoColor=white)](https://groq.com/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-UI-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)
-[![Pydantic](https://img.shields.io/badge/Pydantic-Validation-E92063?style=for-the-badge&logo=pydantic&logoColor=white)](https://docs.pydantic.dev/)
-
-</div>
-
----
+A multi-turn AI restaurant ordering system built with LangGraph and FastAPI.
 
 ## Overview
 
