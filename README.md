@@ -2,9 +2,15 @@
 
 A multi-turn AI restaurant ordering system built with LangGraph and FastAPI.
 
+> **Live Deployments:**
+> * **Interactive API Documentation:** [restaurant-agent-oarq.onrender.com/docs](https://restaurant-agent-oarq.onrender.com/docs)
+> * **Streamlit Chat Application:** [restaurants-agents.streamlit.app](https://restaurants-agents.streamlit.app/)
+
+---
+
 ## Overview
 
-A stateful AI restaurant ordering system built with LangGraph and Groq. It handles multi-turn conversations using a FastAPI backend with MemorySaver, calls tools to query the menu, and serves users through a Streamlit frontend.
+Restaurant Agent is an autonomous conversational ordering agent powered by LangGraph state machines and Groq LLM inference. It manages complex, multi-turn dialogues, extracts customer menu requests into structured Pydantic schemas, verifies dish availability against real-time inventory, and simulates kitchen pipeline lifecycles (order confirmation, cooking, and delivery) with integrated fault tolerance and customer confirmation loops.
 
 ---
 
@@ -46,99 +52,135 @@ graph TD
 
 ## Features
 
-| Component                       | Description                                                                                                                                  |
-| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Dynamic Order Extraction**    | Uses Groq's structured outputs via Pydantic to accurately parse dish names, quantities, and intent (e.g., ordering vs. unrelated chat).      |
-| **Stateful LangGraph Workflow** | Maintains strict conversational and order state using `MemorySaver`, allowing multi-turn conversations and human-in-the-loop confirmation.   |
-| **Inventory Verification**      | Dynamically checks requested items against a live menu dictionary. Handles partial orders by routing back to the user for approval.          |
-| **Fault-Tolerant Execution**    | Implements retries (3 order attempts, 2 cook attempts, 2 serve attempts) simulating real-world kitchen and serving failures. |
-| **Production Architecture**     | Fully containerized, with a FastAPI backend on Render and a Streamlit chat interface.                              |
+| Feature | Description |
+| ------- | ----------- |
+| **Structured Order Extraction** | Uses Groq structured outputs via Pydantic to parse dish selections, quantities, dietary specifications, and user intent |
+| **Stateful LangGraph Workflow** | Manages conversational order state using `MemorySaver`, supporting multi-turn memory and human-in-the-loop validation |
+| **Inventory Verification** | Validates requested items dynamically against active menu dictionaries; handles partial orders by seeking customer confirmation |
+| **Kitchen Fault Tolerance** | Simulates real-world kitchen preparation retries and exception routing across cooking and delivery stages |
+| **Modular Serving Stack** | Decoupled architecture pairing a FastAPI REST backend on Render with an interactive Streamlit UI |
 
 ---
 
 ## Technology Stack
 
-| Component            | Technologies                                |
-| :------------------- | :------------------------------------------ |
-| **Agent Framework**  | `LangGraph`, `LangChain`                    |
-| **LLM Inference**    | `Groq` (model: `openai/gpt-oss-120b`)       |
-| **Data Validation**  | `Pydantic`, `Pydantic-Settings`             |
-| **API & Backend**    | `FastAPI`, `Uvicorn`                        |
-| **Frontend UI**      | `Streamlit`                                 |
-| **Testing**          | `Pytest`                                    |
-| **Containerization** | `Docker`, `uv` (Fast Dependency Resolution) |
+| Component | Technologies |
+| :-------- | :----------- |
+| **Agent Framework** | `LangGraph`, `LangChain` |
+| **LLM Inference** | `Groq` API |
+| **Schema Validation** | `Pydantic`, `Pydantic-Settings` |
+| **API & Backend** | `FastAPI`, `Uvicorn` |
+| **Frontend UI** | `Streamlit` |
+| **Testing & Quality** | `pytest`, `ruff` |
+| **Packaging & Containers** | `uv`, `Docker` |
 
 ---
 
 ## Project Structure
 
-```text
+```
 Restaurant-Agent/
 ├── app/
-│   ├── __init__.py
-│   ├── config.py           # Environment & Settings
-│   ├── graph.py            # LangGraph Nodes & Edges
-│   ├── main.py             # FastAPI Application
-│   └── models.py           # Pydantic Schemas
+│   ├── config.py           # Environment and settings configuration
+│   ├── graph.py            # LangGraph workflow nodes, edges, and state transitions
+│   ├── main.py             # FastAPI service and chat endpoints
+│   └── models.py           # Pydantic schemas for orders, dishes, and responses
 ├── tests/
-│   ├── __init__.py
-│   └── test_scenarios.py   # Pytest Scenarios
-├── .env                    # Groq API Keys
-├── Dockerfile              # Container configuration
-├── render.yaml             # Render Blueprint IaC
-├── pyproject.toml          # UV Dependencies
-└── streamlit_app.py        # Streamlit Chat UI
+│   └── test_scenarios.py   # Multi-turn order scenario test suite
+├── streamlit_app.py        # Streamlit conversational interface
+├── Dockerfile              # Production container build definition
+├── pyproject.toml          # uv dependency management specification
+├── render.yaml             # Render deployment configuration
+└── README.md
 ```
 
 ---
 
-## Setup & Execution
+## Setup and Installation
 
-### 1. Environment Initialization
+### Prerequisites
+
+- Python 3.11+
+- A [Groq API key](https://console.groq.com/keys)
+- [`uv`](https://docs.astral.sh/uv/) installed
+
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/Shashank17singh/Restaurant-Agent.git
 cd Restaurant-Agent
+```
+
+### 2. Install dependencies
+
+```bash
 uv sync
 ```
 
-### 2. Configure Environment Variables
+### 3. Configure environment variables
 
-Create a `.env` file in the root directory and add your Groq API Key:
+Create a `.env` file in the root directory:
 
 ```env
 GROQ_API_KEY=your_api_key_here
 ```
 
-### 3. Run the Backend API
+### 4. Start the backend API
 
 ```bash
 uv run uvicorn app.main:app --port 8000 --reload
 ```
 
-The FastAPI swagger docs will be available at `http://127.0.0.1:8000/docs`.
+Interactive Swagger documentation is available at `http://localhost:8000/docs`.
 
-### 4. Run the Streamlit UI
+### 5. Start the chat interface
 
-In a separate terminal, launch the chat interface:
+In a separate terminal:
 
 ```bash
 uv run streamlit run streamlit_app.py
 ```
 
-### 5. Run Tests
+---
+
+## Running the Tests
+
+Execute automated test scenarios:
 
 ```bash
 uv run pytest
+```
+
+Run static code analysis and linting:
+
+```bash
+uv run ruff check .
 ```
 
 ---
 
 ## Deployment
 
-- **API URL:** https://restaurant-agent-oarq.onrender.com/docs
-- **Dashboard URL:** https://restaurants-agents.streamlit.app/
+The application includes a production Docker container running as an unprivileged user:
+
+```bash
+docker build -t restaurant-agent .
+docker run -p 8000:8000 -e GROQ_API_KEY=your_key restaurant-agent
+```
+
+Live deployments:
+- **API Documentation:** [restaurant-agent-oarq.onrender.com/docs](https://restaurant-agent-oarq.onrender.com/docs)
+- **Chat Interface:** [restaurants-agents.streamlit.app](https://restaurants-agents.streamlit.app/)
 
 ---
 
+## Known Limitations
 
+- Order state is persisted in-memory using `MemorySaver`; distributed horizontal scaling across multi-instance clusters requires a shared Redis or PostgreSQL checkpointer.
+- Menu configurations are loaded from static dictionaries; dynamic database-backed inventory updates require external catalog webhooks.
+
+---
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
