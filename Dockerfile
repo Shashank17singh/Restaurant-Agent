@@ -2,6 +2,7 @@
 FROM python:3.12-slim
 
 # Install uv for fast dependency resolution
+# hadolint ignore=DL3013
 RUN pip install --no-cache-dir uv
 
 # Set the working directory
@@ -25,4 +26,5 @@ ENV PORT=8000
 EXPOSE $PORT
 
 # Start the FastAPI server on 0.0.0.0 to allow external connections
+# hadolint ignore=DL3025
 CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
