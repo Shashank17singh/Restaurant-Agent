@@ -1,8 +1,10 @@
+[client]
+showSidebarNavigation = false
+
 [theme]
-# Espresso dark with terracotta, set in serif like a menu.
 base = "dark"
-primaryColor = "#d0583f"
-backgroundColor = "#1a1412"
-secondaryBackgroundColor = "#261d19"
-textColor = "#f3e9df"
-font = "serif"
+primaryColor = "#e05638"
+backgroundColor = "#0d1117"
+secondaryBackgroundColor = "#161b22"
+textColor = "#f0f6fc"
+font = "sans-serif"
