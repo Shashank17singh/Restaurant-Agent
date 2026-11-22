@@ -11,9 +11,8 @@ if not HAS_KEY:
     # app.config needs a value at import time.
     os.environ["GROQ_API_KEY"] = "placeholder"
 
-from langchain_core.runnables import RunnableConfig
-
 from app.graph import builder, initial_state
+from langchain_core.runnables import RunnableConfig
 
 graph = builder.compile()
 

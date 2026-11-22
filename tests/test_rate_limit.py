@@ -1,8 +1,7 @@
 import pytest
-from pydantic import ValidationError
-
 from app.models import ChatRequest
 from app.rate_limit import RateLimiter, RecentThreads
+from pydantic import ValidationError
 
 
 def test_one_client_cannot_use_the_whole_allowance() -> None:
