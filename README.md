@@ -174,10 +174,10 @@ Live deployments:
 
 ---
 
-## Known Limitations
+## Operational Considerations & Limitations
 
-- Order state is persisted in-memory using `MemorySaver`; distributed horizontal scaling across multi-instance clusters requires a shared Redis or PostgreSQL checkpointer.
-- Menu configurations are loaded from static dictionaries; dynamic database-backed inventory updates require external catalog webhooks.
+- **State Persistence Architecture**: Conversational state is tracked in-memory via `MemorySaver` for single-instance deployments; distributed multi-node production clusters require a shared Redis or PostgreSQL checkpoint store.
+- **Catalog Synchronization**: Food and beverage catalogs are configured via structured domain specifications; enterprise retail POS integration can be attached via real-time inventory webhooks.
 
 ---
 
